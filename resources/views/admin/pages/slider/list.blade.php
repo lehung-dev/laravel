@@ -18,36 +18,29 @@ use App\Helpers\Template as Template;
             @if (count($items) > 0)
             @foreach ($items as $key => $item)
             @php
+            $id = $item['id'];
             $name = $item['name'];
             $description = $item['description'];
             $link = $item['link'];
-            $thumb = asset('admin/img/'.$item->thumb);
+            $thumb = Template::showItemThumb($controllerName, $item['thumb'], $item['name']);
             $created = Template::showItemHistory($item['created_by'], $item['created']);
             $modified = Template::showItemHistory($item['modified_by'], $item['modified']);
+            $btn_status = Template::showItemStatus($controllerName, $id, $item['status']);
+            $class_row = (($key + 1) % 2 == 0) ? 'even' : 'odd';
+            $buttonAction = Template::showButtonAction($controllerName, $id, ['info']);
             @endphp
-            <tr class="even pointer">
+            <tr class="{{ $class_row }} pointer">
                 <td class="">{{$key + 1}}</td>
                 <td width="40%">
                     <p><strong>Name :</strong> {{ $name }}</p>
                     <p><strong>Description :</strong> {{ $description }}</p>
                     <p><strong>Link :</strong> {{ $link }}</p>
-                    <p>
-                        <img src="{{ $thumb }}" alt="{{ $name }}" width="500">
-                    </p>
+                    <p>{!! $thumb !!}</p>
                 </td>
-                <td><a href="/change-status-active/1" type="button" class="btn btn-round btn-success">Active</a></td>
+                <td>{!! $btn_status !!}</td>
                 <td>{!! $created !!}</td>
                 <td>{!! $modified !!}</td>
-                <td class="last">
-                    <div class="zvn-box-btn-filter"><a href="/form/1" type="button" class="btn btn-icon btn-success"
-                            data-toggle="tooltip" data-placement="top" data-original-title="Edit">
-                            <i class="fa fa-pencil"></i>
-                        </a><a href="/delete/1" type="button" class="btn btn-icon btn-danger btn-delete"
-                            data-toggle="tooltip" data-placement="top" data-original-title="Delete">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </div>
-                </td>
+                <td class="last">{!! $buttonAction !!}</td>
             </tr>
             @endforeach
             @else
