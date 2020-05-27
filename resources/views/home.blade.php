@@ -8,5 +8,7 @@
 </head>
 <body>
     <h3>HOME PAGE</h3>
+    {{$id}}
+    {{$name.}}
 </body>
 </html>
