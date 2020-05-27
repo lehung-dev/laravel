@@ -17,9 +17,7 @@ class SliderModel extends Model
 
         if ($options['task'] == 'admin-list-item') {
             // $result = SliderModel::all();
-            $result = self::select('id', 'name', 'description', 'link', 'thumb', 'created', 'created_by', 'modified', 'modified_by', 'status')
-                ->where('id', '>', 3)
-                ->get();
+            $result = self::select('id', 'name', 'description', 'link', 'thumb', 'created', 'created_by', 'modified', 'modified_by', 'status')->get();
         }
         return $result;
     }
