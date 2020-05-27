@@ -4,21 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\SliderModel as MainModel;
 
 class SliderController extends Controller
 {
 
-    private $pathViewController = 'admin.slider.';
+    private $pathViewController = 'admin.pages.slider.';
     private $controllerName = 'slider';
 
     public function __construct()
     {
+        $this->model = new MainModel();
         view()->share('controllerName', $this->controllerName);
     }
 
     public function index()
     {
-        return view($this->pathViewController . 'index');
+        $result = $this->model->listItem(null, ['task' => 'admin-list-item']);
+
+        return view($this->pathViewController . 'index', [
+            'items'     =>  $result
+        ]);
     }
 
 
