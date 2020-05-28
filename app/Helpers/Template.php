@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+
 use Config;
 
 class Template
@@ -17,8 +18,8 @@ class Template
         $tempStatus = Config::get('pvt.template.status');
 
         $link_status = route($controllerName . '/status', ['status' => $status, 'id' => $id]);
-       
-        $statusCurrent = (array_key_exists( $status, $tempStatus)) ? $status : 'default';
+
+        $statusCurrent = (array_key_exists($status, $tempStatus)) ? $status : 'default';
         $currTemp = $tempStatus[$statusCurrent];
 
         $output = sprintf('<a href="%s" type="button" class="btn btn-round %s">%s</a>', $link_status, $currTemp['class'], $currTemp['name']);
@@ -60,30 +61,65 @@ class Template
         return $output;
     }
 
-    public static function showButtonStatus($itemsStatusCount = 0, $controllerName, $currentActive)
+    public static function showButtonStatus($controllerName, $itemsStatusCount = 0, $currentActive)
     {
         $xhtml = null;
         $tempStatus =  Config::get('pvt.template.status');
 
-        if($itemsStatusCount > 0)
-        {   
+        if ($itemsStatusCount > 0) {
             array_unshift($itemsStatusCount, [
-                'count' => array_sum(array_column( $itemsStatusCount, 'count')) ,
+                'count' => array_sum(array_column($itemsStatusCount, 'count')),
                 'status' => 'all'
             ]);
-            
+
             foreach ($itemsStatusCount as $key => $item) {
                 $statusCurrent = $item['status'];
                 $statusCurrent =  (array_key_exists($item['status'], $tempStatus)) ? $statusCurrent : 'default';
 
                 $currTemp = $tempStatus[$statusCurrent];
-               
-                $link_status = route($controllerName).'?filter_status='.$statusCurrent;
+
+                $link_status = route($controllerName) . '?filter_status=' . $statusCurrent;
                 $class = ($statusCurrent == $currentActive) ? 'btn-danger' : 'btn-primary';
 
                 $xhtml .= sprintf('<a href="%s" type="button" class="btn %s"> %s <span class="badge bg-white">%s</span> </a>', $link_status, $class, $currTemp['name'],  $item['count']);
             }
         }
+        return $xhtml;
+    }
+
+
+    public static function showAreaSearch($controllerName)
+    {
+        $xhtml = null;
+        $tempField =  Config::get('pvt.template.search');
+
+        $fieldInController = array(
+            'default'   =>   array('all', 'id', 'fullname'),
+            'slider'    =>   array('all', 'id')
+        );
+
+        $controllerName = (array_key_exists($controllerName, $fieldInController)) ? $controllerName : 'default';
+        $searchBy = null;
+        foreach ($fieldInController[$controllerName] as $key) {
+            $searchBy .= sprintf('<li><a href="#" class="select-field" data-field="%s">%s</a></li>', $key, $tempField[$key]['name']);
+        }
+
+        $xhtml = sprintf('<div class="input-group">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle btn-active-field"
+                    data-toggle="dropdown" aria-expanded="false">
+                    Search by All <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu">%s</ul>
+            </div>
+            <input type="text" class="form-control" name="search_value" value="">
+            <span class="input-group-btn">
+                <button id="btn-clear" type="button" class="btn btn-success"
+                    style="margin-right: 0px">Xóa tìm kiếm</button>
+                <button id="btn-search" type="button" class="btn btn-primary">Tìm kiếm</button>
+            </span>
+            <input type="hidden" name="search_field" value="all">
+        </div>', $searchBy);
         return $xhtml;
     }
 }
