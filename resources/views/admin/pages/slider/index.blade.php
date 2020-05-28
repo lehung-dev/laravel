@@ -1,5 +1,9 @@
+@php
+use App\Helpers\Template as Template;
+@endphp
 @extends('admin.main')
 @section('content')
+
 <div class="page-header zvn-page-header clearfix">
     <div class="zvn-page-header-title">
         <h3>Danh sách User</h3>
@@ -14,13 +18,12 @@
             @include('admin.templates.x_title', ['title' => 'Bộ lọc'])
             <div class="x_content">
                 <div class="row">
-                    <div class="col-md-6"><a href="?filter_status=all" type="button" class="btn btn-primary">
-                            All <span class="badge bg-white">4</span>
-                        </a><a href="?filter_status=active" type="button" class="btn btn-success">
-                            Active <span class="badge bg-white">2</span>
-                        </a><a href="?filter_status=inactive" type="button" class="btn btn-success">
-                            Inactive <span class="badge bg-white">2</span>
-                        </a>
+                    <div class="col-md-6">
+                        @php
+                        $showButtonStatus = Template::showButtonStatus($itemsStatusCount, $controllerName,
+                        $params['filter']['status']);
+                        @endphp
+                        {!!$showButtonStatus !!}
                     </div>
                     <div class="col-md-6">
                         <div class="input-group">
@@ -48,13 +51,6 @@
                             <input type="hidden" name="search_field" value="all">
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <select name="select_filter" class="form-control" data-field="level">
-                            <option value="default" selected="selected">Select Level</option>
-                            <option value="admin">Admin</option>
-                            <option value="member">Member</option>
-                        </select>
-                    </div>
                 </div>
             </div>
         </div>
@@ -72,37 +68,15 @@
     </div>
 </div>
 <!--end-box-lists-->
-<!--box-pagination-->
+@if (count($items) > 0)
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
             @include('admin.templates.x_title', ['title' => 'Phân trang'])
-            <div class="x_content">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p class="m-b-0">Số phần tử trên trang: <b>2</b> trên <span
-                                class="label label-success label-pagination">3 trang</span></p>
-                        <p class="m-b-0">Hiển thị<b> 1 </b> đến<b> 2</b> trên<b> 6</b> Phần tử</p>
-                    </div>
-                    <div class="col-md-6">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination zvn-pagination">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">«</a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">»</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
+            @include('admin.templates.pagination')
         </div>
     </div>
 </div>
-<!--end-box-pagination-->
+@endif
+
 @endsection
