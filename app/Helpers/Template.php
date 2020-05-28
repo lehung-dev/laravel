@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+use Config;
 
 class Template
 {
@@ -13,14 +14,14 @@ class Template
 
     public static function showItemStatus($controllerName, $id, $status)
     {
-        $tempStatus = array(
-            'active'    =>  ['name' => 'Kích hoạt', 'class' => 'btn-success'],
-            'inactive'  =>  ['name' => 'Chưa kích hoạt', 'class' => 'btn-info'],
-        );
+        $tempStatus = Config::get('pvt.template.status');
 
         $link_status = route($controllerName . '/status', ['status' => $status, 'id' => $id]);
+       
+        $statusCurrent = (array_key_exists( $status, $tempStatus)) ? $status : 'default';
+        $currTemp = $tempStatus[$statusCurrent];
 
-        $output = sprintf('<a href="%s" type="button" class="btn btn-round %s">%s</a>', $link_status, $tempStatus[$status]['class'], $tempStatus[$status]['name']);
+        $output = sprintf('<a href="%s" type="button" class="btn btn-round %s">%s</a>', $link_status, $currTemp['class'], $currTemp['name']);
         return $output;
     }
 
@@ -57,5 +58,32 @@ class Template
         }
         $output .= '</div>';
         return $output;
+    }
+
+    public static function showButtonStatus($itemsStatusCount = 0, $controllerName, $currentActive)
+    {
+        $xhtml = null;
+        $tempStatus =  Config::get('pvt.template.status');
+
+        if($itemsStatusCount > 0)
+        {   
+            array_unshift($itemsStatusCount, [
+                'count' => array_sum(array_column( $itemsStatusCount, 'count')) ,
+                'status' => 'all'
+            ]);
+            
+            foreach ($itemsStatusCount as $key => $item) {
+                $statusCurrent = $item['status'];
+                $statusCurrent =  (array_key_exists($item['status'], $tempStatus)) ? $statusCurrent : 'default';
+
+                $currTemp = $tempStatus[$statusCurrent];
+               
+                $link_status = route($controllerName).'?filter_status='.$statusCurrent;
+                $class = ($statusCurrent == $currentActive) ? 'btn-danger' : 'btn-primary';
+
+                $xhtml .= sprintf('<a href="%s" type="button" class="btn %s"> %s <span class="badge bg-white">%s</span> </a>', $link_status, $class, $currTemp['name'],  $item['count']);
+            }
+        }
+        return $xhtml;
     }
 }
