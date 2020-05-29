@@ -16,7 +16,7 @@ class SliderController extends Controller
     public function __construct()
     {
         $this->model = new MainModel();
-        $this->params['pagination']['totalItemPerPage'] = 10 ;
+        $this->params['pagination']['totalItemPerPage'] = 5 ;
 
         view()->share('controllerName', $this->controllerName);
     }
@@ -24,7 +24,9 @@ class SliderController extends Controller
     public function index(Request $request)
     {
         $this->params['filter']['status'] = $request->input('filter_status', 'all');
-
+        $this->params['search']['field'] = $request->input('search_field');
+        $this->params['search']['value'] = $request->input('search_value');
+     
         $result = $this->model->listItem($this->params, ['task' => 'admin-list-item']);
         $itemsStatusCount = $this->model->countItem($this->params, ['task' => 'admin-count-item']);
         

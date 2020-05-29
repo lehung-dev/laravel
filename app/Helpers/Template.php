@@ -34,11 +34,7 @@ class Template
 
     public static function showButtonAction($controllerName, $id, $key_remove = null)
     {
-        $tempButton = [
-            'edit'      => ['class' => 'btn-success',   'title' => 'Edit',      'icon' => 'fa-pencil',  'route-name' => $controllerName . '/form'],
-            'delete'    => ['class' => 'btn-danger',    'title' => 'Delete',    'icon' => 'fa-trash',   'route-name' => $controllerName . '/delete'],
-            'info'      => ['class' => 'btn-info',      'title' => 'View',      'icon' => 'fa-pencil',  'route-name' => $controllerName . '/form'],
-        ];
+        $tempButton = Config::get('pvt.template.button');
 
         if (!empty($key_remove)) {
             if (is_array($key_remove)) {
@@ -53,7 +49,7 @@ class Template
 
         $output = '<div class="zvn-box-btn-filter">';
         foreach ($tempButton as $button) {
-            $link = route($button['route-name'], ['id' => $id]);
+            $link = route($controllerName . $button['route-name'], ['id' => $id]);
             $output .= sprintf('<a href="%s" type="button" class="btn btn-icon %s" data-toggle="tooltip" data-placement="top" data-original-title="%s">
                                 <i class="fa %s"></i></a>', $link, $button['class'], $button['title'], $button['icon']);
         }
@@ -88,15 +84,13 @@ class Template
     }
 
 
-    public static function showAreaSearch($controllerName)
+    public static function showAreaSearch($controllerName, $paramSearch = null)
     {
         $xhtml = null;
         $tempField =  Config::get('pvt.template.search');
+        $fieldInController = Config::get('pvt.config.search');
 
-        $fieldInController = array(
-            'default'   =>   array('all', 'id', 'fullname'),
-            'slider'    =>   array('all', 'id')
-        );
+        $keyword = (isset($paramSearch['value'])) ? $paramSearch['value'] : '';
 
         $controllerName = (array_key_exists($controllerName, $fieldInController)) ? $controllerName : 'default';
         $searchBy = null;
@@ -104,22 +98,23 @@ class Template
             $searchBy .= sprintf('<li><a href="#" class="select-field" data-field="%s">%s</a></li>', $key, $tempField[$key]['name']);
         }
 
+        $searchField = (in_array($paramSearch['field'], $fieldInController[$controllerName])) ? $tempField[$paramSearch['field']]['name'] : 'all';
+
         $xhtml = sprintf('<div class="input-group">
-            <div class="input-group-btn">
-                <button type="button" class="btn btn-default dropdown-toggle btn-active-field"
-                    data-toggle="dropdown" aria-expanded="false">
-                    Search by All <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right" role="menu">%s</ul>
-            </div>
-            <input type="text" class="form-control" name="search_value" value="">
-            <span class="input-group-btn">
-                <button id="btn-clear" type="button" class="btn btn-success"
-                    style="margin-right: 0px">Xóa tìm kiếm</button>
-                <button id="btn-search" type="button" class="btn btn-primary">Tìm kiếm</button>
-            </span>
-            <input type="hidden" name="search_field" value="all">
-        </div>', $searchBy);
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle btn-active-field" data-toggle="dropdown" aria-expanded="false">
+                                    %s <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">%s</ul>
+                            </div>
+                            <input type="text" class="form-control" name="search_value" value="%s">
+                            <input type="hidden" name="search_field" value="all">
+                            <span class="input-group-btn">
+                                <button id="btn-clear" type="button" class="btn btn-success" style="margin-right: 0px">Xóa tìm kiếm</button>
+                                <button id="btn-search" type="button" class="btn btn-primary">Tìm kiếm</button>
+                            </span>
+                        </div>', 
+                        $searchField, $searchBy, $keyword);
         return $xhtml;
     }
 }

@@ -21,10 +21,7 @@ Route::get('/', function () {
 
 
 Route::group(['prefix' => $prefix_admin], function () {
-    Route::get('users', function () {
-        return 'admin/user';
-    });
-
+    
 
     /*=====================     DASHBOARD      ====================*/
     $prefix             = 'dashboard';

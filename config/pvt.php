@@ -25,6 +25,17 @@ return [
             'description'   => ['name' => 'Search by Description'],
             'link'          => ['name' => 'Search by Link'],
             'content'       => ['name' => 'Search by Content'],
+        ],
+        'button'    => [
+            'edit'          => ['class' => 'btn-success',   'title' => 'Edit',      'icon' => 'fa-pencil',  'route-name' => '/form'],
+            'delete'        => ['class' => 'btn-danger',    'title' => 'Delete',    'icon' => 'fa-trash',   'route-name' => '/delete'],
+            'info'          => ['class' => 'btn-info',      'title' => 'View',      'icon' => 'fa-pencil',  'route-name' => '/form'],
+        ]
+    ],
+    'config'    =>  [
+        'search'    =>  [
+            'default'   =>   [ 'all', 'id', 'fullname' ],
+            'slider'    =>   [ 'all', 'id', 'description', 'link' ]
         ]
     ]
 ];
