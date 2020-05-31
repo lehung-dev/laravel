@@ -15,6 +15,8 @@
 <link href="{{ asset('admin/asset/iCheck/skins/flat/green.css') }}" rel="stylesheet">
 <!-- bootstrap-progressbar -->
 <link href="{{ asset('admin/asset/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css') }}" rel="stylesheet">
+<!-- jAlert -->
+<link href="{{ asset('admin/js/jAlert/jquery.alerts.css') }}" rel="stylesheet">
 <!-- Custom Theme Style -->
 <link href="{{ asset('admin/css/custom.min.css') }}" rel="stylesheet">
 <!-- Custom Theme Style -->

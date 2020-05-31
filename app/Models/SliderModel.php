@@ -12,43 +12,37 @@ class SliderModel extends Model
     const CREATED_AT = 'created';
     const UPDATED_AT = 'modified';
     protected $fieldSearchAccepted = [
-        'id' , 'name' , 'descripstion' , 'link'
+        'id', 'name', 'description', 'link'
     ];
 
     public function listItem($params = null, $options = null)
     {
         $result = null;
 
-        echo "<pre>";
-        print_r($params);
-        echo "</pre>";
-
         if ($options['task'] == 'admin-list-item') {
             // $result = SliderModel::all();
             $query = self::select('id', 'name', 'description', 'link', 'thumb', 'created', 'created_by', 'modified', 'modified_by', 'status');
-            
+
             // Lọc trạng thái
-            if($params['filter']['status'] !== 'all')
-            {
-                $query->where('status' , '=' , $params['filter']['status']);
+            if ($params['filter']['status'] !== 'all') {
+                $query->where('status', '=', $params['filter']['status']);
             }
 
-            if($params['search']['value'] !== '')
-            {
-                if($params['search']['field'] == 'all')
-                {
-
-                }
-                else if(in_array($params['search']['field'], $this->fieldSearchAccepted))
-                {
-                    $query->where($params['search']['field'], 'LIKE' , '%'.$params['search']['value'].'%');
-                }
-                else{
-
+            if ($params['search']['value'] !== '') {
+                if ($params['search']['field'] == 'all') {
+                    $query->where(function ($query) use ($params) {
+                        foreach ($this->fieldSearchAccepted as $key) {
+                            //you can use orWhere the first time, doesn't need to be ->where
+                            $query->orWhere($key, 'LIKE', '%' . $params['search']['value'] . '%');
+                        }
+                    });
+                } else if (in_array($params['search']['field'], $this->fieldSearchAccepted)) {
+                    $query->where($params['search']['field'], 'LIKE', '%' . $params['search']['value'] . '%');
+                } else {
                 }
             }
 
-            $result = $query->orderBy('id','desc')->paginate($params['pagination']['totalItemPerPage']);
+            $result = $query->orderBy('id', 'desc')->paginate($params['pagination']['totalItemPerPage']);
         }
         return $result;
     }
@@ -59,11 +53,58 @@ class SliderModel extends Model
 
         if ($options['task'] == 'admin-count-item') {
             // $result = SliderModel::all();
-            $result = self::select(DB::raw('count(id) as count, status'))
-                            ->groupBy('status')
-                            ->get()
-                            ->toArray();
+            $query = self::select(DB::raw('count(id) as count, status'));
+
+            if ($params['search']['value'] !== '') {
+                if ($params['search']['field'] == 'all') {
+                    $query->where(function ($query) use ($params) {
+                        foreach ($this->fieldSearchAccepted as $key) {
+                            //you can use orWhere the first time, doesn't need to be ->where
+                            $query->orWhere($key, 'LIKE', '%' . $params['search']['value'] . '%');
+                        }
+                    });
+                } else if (in_array($params['search']['field'], $this->fieldSearchAccepted)) {
+                    $query->where($params['search']['field'], 'LIKE', '%' . $params['search']['value'] . '%');
+                } else {
+
+                }
+            }
+
+            $result = $query->groupBy('status')->get()->toArray();
         }
+        return $result;
+    }
+    
+    public function getItem($params = null, $options = null)
+    {
+        $result = null;
+
+        if ($options['task'] == 'get-item') {
+            $result = self::select('id', 'name', 'description', 'link', 'thumb', 'status')->where('id', '=', $params['id'])->first()->toArray();
+        }
+        return $result;
+    }
+
+    public function saveItem($params = null, $options = null)
+    {
+        $result = null;
+        if($options['task'] == 'change-status')
+        {
+            $status = ($params['currentStatus'] == 'active') ? 'inactive' : 'active';
+            $result = self::where('id', $params['id'])->update(['status' => $status]);
+        }
+
+        return $result;
+    }
+    
+    public function deleteItem($params = null, $options = null)
+    {
+        $result = null;
+        if($options['task'] == 'delete-item')
+        {
+            $result = self::where('id', $params['id'])->delete();
+        }
+
         return $result;
     }
 }

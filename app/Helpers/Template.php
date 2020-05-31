@@ -57,7 +57,7 @@ class Template
         return $output;
     }
 
-    public static function showButtonStatus($controllerName, $itemsStatusCount = 0, $currentActive)
+    public static function showButtonStatus($controllerName, $itemsStatusCount = 0, $currentActive, $paramSearch = null)
     {
         $xhtml = null;
         $tempStatus =  Config::get('pvt.template.status');
@@ -74,10 +74,14 @@ class Template
 
                 $currTemp = $tempStatus[$statusCurrent];
 
-                $link_status = route($controllerName) . '?filter_status=' . $statusCurrent;
                 $class = ($statusCurrent == $currentActive) ? 'btn-danger' : 'btn-primary';
+                $link = route($controllerName) . '?filter_status=' . $statusCurrent;
+                if (isset($paramSearch) && !empty($paramSearch['value'])) {
+                    $link .= '&search_field=' . $paramSearch['field'];
+                    $link .= '&search_value=' . $paramSearch['value'];
+                }
 
-                $xhtml .= sprintf('<a href="%s" type="button" class="btn %s"> %s <span class="badge bg-white">%s</span> </a>', $link_status, $class, $currTemp['name'],  $item['count']);
+                $xhtml .= sprintf('<a href="%s" type="button" class="btn %s"> %s <span class="badge bg-white">%s</span> </a>', $link, $class, $currTemp['name'],  $item['count']);
             }
         }
         return $xhtml;
@@ -89,7 +93,6 @@ class Template
         $xhtml = null;
         $tempField =  Config::get('pvt.template.search');
         $fieldInController = Config::get('pvt.config.search');
-
         $keyword = (isset($paramSearch['value'])) ? $paramSearch['value'] : '';
 
         $controllerName = (array_key_exists($controllerName, $fieldInController)) ? $controllerName : 'default';
@@ -98,9 +101,9 @@ class Template
             $searchBy .= sprintf('<li><a href="#" class="select-field" data-field="%s">%s</a></li>', $key, $tempField[$key]['name']);
         }
 
-        $searchField = (in_array($paramSearch['field'], $fieldInController[$controllerName])) ? $tempField[$paramSearch['field']]['name'] : 'all';
-
-        $xhtml = sprintf('<div class="input-group">
+        $searchField = (in_array($paramSearch['field'], $fieldInController[$controllerName])) ? $paramSearch['field'] : 'all';
+        $xhtml = sprintf(
+            '<div class="input-group">
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle btn-active-field" data-toggle="dropdown" aria-expanded="false">
                                     %s <span class="caret"></span>
@@ -108,13 +111,17 @@ class Template
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">%s</ul>
                             </div>
                             <input type="text" class="form-control" name="search_value" value="%s">
-                            <input type="hidden" name="search_field" value="all">
+                            <input type="hidden" name="search_field" value="%s">
                             <span class="input-group-btn">
                                 <button id="btn-clear" type="button" class="btn btn-success" style="margin-right: 0px">Xóa tìm kiếm</button>
                                 <button id="btn-search" type="button" class="btn btn-primary">Tìm kiếm</button>
                             </span>
-                        </div>', 
-                        $searchField, $searchBy, $keyword);
+                        </div>',
+            $tempField[$searchField]['name'],
+            $searchBy,
+            $keyword,
+            $searchField
+        );
         return $xhtml;
     }
 }

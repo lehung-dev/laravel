@@ -1,0 +1,115 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300&subset=latin,vietnamese);
+
+#popup_container {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	min-width: 300px; /* Dialog will be no smaller than this */
+	max-width: 600px; /* Dialog will wrap after this width */
+	background: #FFF;
+	color: #000;
+}
+
+#popup_title {
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 1.75em;
+	color: #666;
+	background: #CCC url(images/title.gif) top repeat-x;
+	border: solid 1px #FFF;
+	border-bottom: solid 1px #999;
+	cursor: default;
+	padding: 0em;
+	margin: 0em;
+	text-transform: uppercase;
+	font-family: 'Roboto Condensed';
+}
+
+#popup_content {
+	background: 16px 16px no-repeat url(images/info.gif);
+	padding: 1em 1.75em;
+	margin: 0em;
+}
+
+#popup_content.alert {
+	background-image: url(images/info.gif);
+}
+
+#popup_content.confirm {
+	background-image: url(images/important.gif);
+}
+
+#popup_content.prompt {
+	background-image: url(images/help.gif);
+}
+
+#popup_message {
+	color:#333333;
+	min-height: 35px;
+	text-align: left;
+	padding-left: 48px;
+	font-size: 16px;
+	line-height: 1.5em;
+}
+
+#popup_panel {
+	text-align:right;
+	margin: 9px 0px 0px;
+}
+
+#popup_prompt {
+	margin: .5em 0em;
+}
+
+/* For Blue Theme */
+#popup_title_blue {
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 1.75em;
+	color: #fff;
+	background: #007bc2;
+	cursor: default;
+	padding: 5px;
+	margin: 0em;
+	text-transform: uppercase;
+	font-family: 'Roboto Condensed';
+}
+
+#popup_content_blue {
+	padding: 20px;
+	margin: 0em;
+}
+
+#popup_content_blue.alert {
+	background-image: url(images/info-blue.png);
+}
+
+#popup_content_blue.confirm {
+	background-image: url(images/important-blue.png);
+}
+
+#popup_content_blue.prompt {
+	background-image: url(images/help-blue.png);
+}
+
+/*BOOTSTRAP THEME*/
+#popup_cancel , #popup_ok{
+	min-width: 70px;
+}
+
+.icon_alert{
+	font-size: 35px;
+	position: absolute;
+	left: 25px;
+	top: 50px;
+	color: #007bc2;
+}
+
+.button-close{
+	position: absolute;
+    right: 5px;
+    top: 4px;
+	font-size: 16px;
+	padding: 0px 0px 0px 1px;
+}

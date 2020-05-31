@@ -12,7 +12,7 @@
         </div>
         <div class="col-md-6">
             {{-- {{ $items->links() }} Dạng mặc định của Laravel --}}
-            {{ $items->links('admin.templates.pagination_zvn') }}
+            {!! $items->appends(request()->input())->links('admin.templates.pagination_zvn') !!}
         </div>
     </div>
 </div>

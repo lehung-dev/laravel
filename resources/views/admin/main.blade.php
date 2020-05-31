@@ -26,9 +26,8 @@
             @include('admin.elements.footer')
             <!-- /footer -->
         </div>
-    </div>t
+    </div>
     @include('admin.elements.script')
-   
 </body>
 
 </html>
