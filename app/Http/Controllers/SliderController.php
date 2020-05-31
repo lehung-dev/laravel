@@ -56,15 +56,13 @@ class SliderController extends Controller
     
     public function save(Request $request)
     {
-        $data = array();
-        $item = null;
-        if($request->route('id') !== null)
-        {
-            $this->params['id'] = $request->route('id');
-        }
-        
-        $data['item'] = $item;
-        return view($this->pathViewController . 'form', $data);
+        $validatedData = $request->validate([
+            'name'          => 'required|min:3',
+            'description'   => 'required',
+            'link'          => 'bail|required|min:5|url'
+        ]);
+
+        dd('h3');
     }
 
 

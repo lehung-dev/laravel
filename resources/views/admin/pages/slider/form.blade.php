@@ -10,18 +10,19 @@ use App\Helpers\Template as Template;
         <div class="x_panel">
             @include('admin.templates.x_title', ['title' => 'Form'])
             <div class="x_content">
+                @include('admin.templates.error')
                 <form method="POST" action="{{ route($controllerName.'/save') }}" accept-charset="UTF-8" enctype="multipart/form-data" class="form-horizontal form-label-left" id="main-form">
-                    <input name="_token" type="hidden" value="m4wsEvprE9UQhk4WAexK6Xhg2nGQwWUOPsQAZOQ5">
+                    @csrf
                     <div class="form-group">
                         <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Name</label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input class="form-control col-md-6 col-xs-12" name="name" type="text" value="Ưu đãi học phí" id="name">
+                            <input class="form-control col-md-6 col-xs-12" name="name" type="text" value="" id="name">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Description</label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input class="form-control col-md-6 col-xs-12" name="description" type="text" value="Tổng hợp các trương trình ưu đãi học phí hàng tuần..." id="description">
+                            <input class="form-control col-md-6 col-xs-12" name="description" type="text" value="" id="description">
                         </div>
                     </div>
                     <div class="form-group">
