@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\SliderModel as MainModel;
 use Illuminate\Support\Facades\Config;
+use App\Models\SliderModel              as MainModel;
+use App\Http\Requests\SliderRequest     as MainRequest;
 
 class SliderController extends Controller
 {
 
-    private $pathViewController = 'admin.pages.slider.';
+    private $pathViewController = 'admin.pages.slider.'; 
     private $controllerName = 'slider';
     private $params = [];
 
@@ -54,15 +55,25 @@ class SliderController extends Controller
         return view($this->pathViewController . 'form', $data);
     }
     
-    public function save(Request $request)
+    public function save(MainRequest $request)
     {
-        $validatedData = $request->validate([
-            'name'          => 'required|min:3',
-            'description'   => 'required',
-            'link'          => 'bail|required|min:5|url'
-        ]);
+        if($request->method() == 'POST')
+        {
+            $params = $request->all();
 
-        dd('h3');
+            $task = 'add-item';
+            $notify = 'Thêm mới phần tử thành công';
+
+            if($params['id'] !== null)
+            {
+                $task = 'edit-item';
+                $notify = 'Cập nhập phần tử thành công';
+            }
+
+            $this->model->saveItem($params, ['task' => $task]);
+       
+            return redirect()->route($this->controllerName)->with('notify', $notify);
+        }
     }
 
 

@@ -1,5 +1,47 @@
 @php
+use App\Helpers\Form as FormTemplate;
 use App\Helpers\Template as Template;
+
+$formInputClass = 'form-control col-md-6 col-xs-12';
+$formLabelClass = 'control-label col-md-3 col-sm-3 col-xs-12';
+
+$statusValue = [
+        ''          => '--Select Status--', 
+        'active'    => config('pvt.template.status.active.name'), 
+        'inactive'  => config('pvt.template.status.inactive.name')
+];
+$inputHidden =  FormTemplate::hidden('id', (!empty($item['id'])) ? $item['id'] : null);
+$inputHidden .= FormTemplate::hidden('thumb_current', (!empty($item['thumb'])) ? $item['thumb'] : null);
+
+$elements = [
+    [
+        'label'     => FormTemplate::label('name', 'Name', ['class' => $formLabelClass]),
+        'element'   => FormTemplate::text('name', $item['name'] , ['class' => $formInputClass])
+    ],
+    [
+        'label'     => FormTemplate::label('description', 'Description', ['class' => $formLabelClass]),
+        'element'   => FormTemplate::text('description', $item['description'] , ['class' => $formInputClass])
+    ],
+    [
+        'label'     => FormTemplate::label('status', 'Status', ['class' => $formLabelClass]),
+        'element'   => FormTemplate::select('status', $statusValue, $item['status'], ['class' => $formInputClass])
+    ],
+    [
+        'label'     => FormTemplate::label('link', 'Link', ['class' => $formLabelClass]),
+        'element'   => FormTemplate::text('link', $item['link'] , ['class' => $formInputClass])
+    ],
+    [
+        'label'     => FormTemplate::label('thumb', 'Thumb', ['class' => $formLabelClass]),
+        'element'   => FormTemplate::file('thumb', ['class' => $formInputClass]),
+        'thumb'     => (!empty($item['id'])) ? Template::showItemThumb($controllerName, $item['thumb'], $item['name']) : null,
+        'type'      => 'thumb'   
+    ],
+    [
+        'element'   => $inputHidden . FormTemplate::submit('Save', ['class' => 'btn btn-success']),
+        'type'      => 'btn-submit'   
+    ],
+]
+
 @endphp
 @extends('admin.main')
 @section('content')
@@ -13,55 +55,10 @@ use App\Helpers\Template as Template;
                 @include('admin.templates.error')
                 <form method="POST" action="{{ route($controllerName.'/save') }}" accept-charset="UTF-8" enctype="multipart/form-data" class="form-horizontal form-label-left" id="main-form">
                     @csrf
-                    <div class="form-group">
-                        <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Name</label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input class="form-control col-md-6 col-xs-12" name="name" type="text" value="" id="name">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Description</label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input class="form-control col-md-6 col-xs-12" name="description" type="text" value="" id="description">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="status" class="control-label col-md-3 col-sm-3 col-xs-12">Status</label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <select class="form-control col-md-6 col-xs-12" id="status" name="status">
-                                <option value="default">Select status</option>
-                                <option value="active" selected="selected">Kích hoạt</option>
-                                <option value="inactive">Chưa kích hoạt</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="link" class="control-label col-md-3 col-sm-3 col-xs-12">Link</label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input class="form-control col-md-6 col-xs-12" name="link" type="text" value="https://zendvn.com/uu-dai-hoc-phi-tai-zendvn/" id="link">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="thumb" class="control-label col-md-3 col-sm-3 col-xs-12">Thumb</label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input class="form-control col-md-6 col-xs-12" name="thumb" type="file" id="thumb">
-                            <p style="margin-top: 50px;"><img src="http://proj_news.xyz/images/slider/LWi6hINpXz.jpeg" alt="Ưu đãi học phí" class="zvn-thumb"></p>
-                        </div>
-                    </div>
-                    <div class="ln_solid"></div>
-                    <div class="form-group">
-                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                            <input name="id" type="hidden" value="3">
-                            <input name="thumb_current" type="hidden" value="LWi6hINpXz.jpeg">
-                            <input class="btn btn-success" type="submit" value="Save">
-                        </div>
-                    </div>
+                    {!! FormTemplate::show($elements); !!}
                 </form>
             </div>
         </div>
     </div>
 </div>
-<!--end-box-lists-->
-
-
 @endsection

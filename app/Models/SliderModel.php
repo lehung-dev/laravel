@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class SliderModel extends Model
 {
@@ -13,6 +14,10 @@ class SliderModel extends Model
     const UPDATED_AT = 'modified';
     protected $fieldSearchAccepted = [
         'id', 'name', 'description', 'link'
+    ];
+    
+    protected $crudNotAccepted = [
+        '_token', 'thumb_current', 'thumb'
     ];
 
     public function listItem($params = null, $options = null)
@@ -92,6 +97,16 @@ class SliderModel extends Model
         {
             $status = ($params['currentStatus'] == 'active') ? 'inactive' : 'active';
             $result = self::where('id', $params['id'])->update(['status' => $status]);
+        }
+        
+        if($options['task'] == 'add-item')
+        {
+            $thumb = $params['thumb'];
+            $params['thumb'] = Str::random(10) .'.'. $thumb->clientExtension(); 
+            $thumb->storeAs('slider', $params['thumb'], 'zvn_storage_image');
+            $params = array_diff_key($params, array_flip($this->crudNotAccepted));
+            // var_dump($params); die();
+            $result = self::insert($params);
         }
 
         return $result;

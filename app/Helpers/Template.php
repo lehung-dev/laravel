@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Helpers;
-
-use Config;
+use Illuminate\Support\Facades\Config;
 
 class Template
 {
