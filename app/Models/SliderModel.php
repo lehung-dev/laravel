@@ -5,20 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
-class SliderModel extends Model
+class SliderModel extends AdminModel
 {
-    protected $table = 'slider';
-    public $timestamps = false;
-    const CREATED_AT = 'created';
-    const UPDATED_AT = 'modified';
-    protected $fieldSearchAccepted = [
-        'id', 'name', 'description', 'link'
-    ];
     
-    protected $crudNotAccepted = [
-        '_token', 'thumb_current', 'thumb'
-    ];
+    public function __construct()
+    {
+        $this->table = 'slider';
+        $this->folderUpload = 'slider';
+        $this->fieldSearchAccepted = [ 'id', 'name', 'description', 'link' ];
+        $this->fieldSearchAccepted = [ '_token', 'thumb_current' ];
+    }
 
     public function listItem($params = null, $options = null)
     {
@@ -80,12 +78,15 @@ class SliderModel extends Model
         return $result;
     }
     
-    public function getItem($params = null, $options = null)
+    static public function getItem($params = null, $options = null)
     {
         $result = null;
 
         if ($options['task'] == 'get-item') {
             $result = self::select('id', 'name', 'description', 'link', 'thumb', 'status')->where('id', '=', $params['id'])->first()->toArray();
+        }
+        if ($options['task'] == 'get-thumb') {
+            $result = self::select('id', 'thumb')->where('id', '=', $params['id'])->first()->toArray();
         }
         return $result;
     }
@@ -101,12 +102,30 @@ class SliderModel extends Model
         
         if($options['task'] == 'add-item')
         {
-            $thumb = $params['thumb'];
-            $params['thumb'] = Str::random(10) .'.'. $thumb->clientExtension(); 
-            $thumb->storeAs('slider', $params['thumb'], 'zvn_storage_image');
-            $params = array_diff_key($params, array_flip($this->crudNotAccepted));
+            $params['thumb'] = self::uploadThumb($params['thumb']);;
+            $params['created_by'] = 'van hung';
+            $params['created'] = date('Y-m-d');
+            $params = self::prepareParams($params);
+            
             // var_dump($params); die();
             $result = self::insert($params);
+        }
+        
+        if($options['task'] == 'edit-item')
+        {
+            if(!empty($params['thumb']))
+            {
+                // Xóa cũ
+                self::deleteThumb($params['thumb_current']);
+                //Up mới
+                $params['thumb'] = self::uploadThumb($params['thumb']);
+            }
+           
+            $params['modified_by'] = 'van hung';
+            $params['modified'] = date('Y-m-d');
+            $params = self::prepareParams($params);
+            // var_dump($params); die();
+            $result = self::where('id', $params['id'])->update($params);
         }
 
         return $result;
@@ -117,9 +136,11 @@ class SliderModel extends Model
         $result = null;
         if($options['task'] == 'delete-item')
         {
+            $item = self::getItem($params, ['task' => 'get-thumb']);
+            self::deleteThumb($item['thumb']);
             $result = self::where('id', $params['id'])->delete();
         }
-
         return $result;
     }
+    
 }

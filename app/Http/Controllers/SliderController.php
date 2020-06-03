@@ -80,7 +80,7 @@ class SliderController extends Controller
     public function delete(Request $request)
     {
         $this->params['id'] = $request->route('id');
-        $result = $this->model->deleteItem($this->params, ['task' => 'delete']);
+        $result = $this->model->deleteItem($this->params, ['task' => 'delete-item']);
         $mess = ($result) ? 'Đã xóa thành công ID: <strong>'.$this->params['id'].'</strong> thành công' : 'Có lỗi. Vui lòng thử lại';
         return redirect()->route($this->controllerName)->with('notify', $mess);
     }

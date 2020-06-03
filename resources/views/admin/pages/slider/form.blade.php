@@ -2,8 +2,8 @@
 use App\Helpers\Form as FormTemplate;
 use App\Helpers\Template as Template;
 
-$formInputClass = 'form-control col-md-6 col-xs-12';
-$formLabelClass = 'control-label col-md-3 col-sm-3 col-xs-12';
+$formInputAttr = 'form-control col-md-6 col-xs-12';
+$formLabelAttr = 'control-label col-md-3 col-sm-3 col-xs-12';
 
 $statusValue = [
         ''          => '--Select Status--', 
@@ -15,24 +15,24 @@ $inputHidden .= FormTemplate::hidden('thumb_current', (!empty($item['thumb'])) ?
 
 $elements = [
     [
-        'label'     => FormTemplate::label('name', 'Name', ['class' => $formLabelClass]),
-        'element'   => FormTemplate::text('name', $item['name'] , ['class' => $formInputClass])
+        'label'     => FormTemplate::label('name', 'Name', ['class' => $formLabelAttr]),
+        'element'   => FormTemplate::text('name', $item['name'] , ['class' => $formInputAttr])
     ],
     [
-        'label'     => FormTemplate::label('description', 'Description', ['class' => $formLabelClass]),
-        'element'   => FormTemplate::text('description', $item['description'] , ['class' => $formInputClass])
+        'label'     => FormTemplate::label('description', 'Description', ['class' => $formLabelAttr]),
+        'element'   => FormTemplate::text('description', $item['description'] , ['class' => $formInputAttr])
     ],
     [
-        'label'     => FormTemplate::label('status', 'Status', ['class' => $formLabelClass]),
-        'element'   => FormTemplate::select('status', $statusValue, $item['status'], ['class' => $formInputClass])
+        'label'     => FormTemplate::label('status', 'Status', ['class' => $formLabelAttr]),
+        'element'   => FormTemplate::select('status', $statusValue, $item['status'], ['class' => $formInputAttr])
     ],
     [
-        'label'     => FormTemplate::label('link', 'Link', ['class' => $formLabelClass]),
-        'element'   => FormTemplate::text('link', $item['link'] , ['class' => $formInputClass])
+        'label'     => FormTemplate::label('link', 'Link', ['class' => $formLabelAttr]),
+        'element'   => FormTemplate::text('link', $item['link'] , ['class' => $formInputAttr])
     ],
     [
-        'label'     => FormTemplate::label('thumb', 'Thumb', ['class' => $formLabelClass]),
-        'element'   => FormTemplate::file('thumb', ['class' => $formInputClass]),
+        'label'     => FormTemplate::label('thumb', 'Thumb', ['class' => $formLabelAttr]),
+        'element'   => FormTemplate::file('thumb', ['class' => $formInputAttr]),
         'thumb'     => (!empty($item['id'])) ? Template::showItemThumb($controllerName, $item['thumb'], $item['name']) : null,
         'type'      => 'thumb'   
     ],
