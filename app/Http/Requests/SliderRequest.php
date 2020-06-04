@@ -30,7 +30,6 @@ class SliderRequest extends FormRequest
         if(!empty($id))
         {
             $condThumb = 'bail|image|max:1024';
-            $condName .= ",id";
         }
         return [
             'name'          => $condName,

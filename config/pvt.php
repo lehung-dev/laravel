@@ -4,6 +4,9 @@ return [
     'admin' => [
         'prefix_admin'      => 'admin',
     ],
+    'app' => [
+        'prefix_news'       => 'news69',
+    ],
     'format' => [
         'short_time'        => 'H:i d/m/Y',
         'long_time'         => 'd/m/Y',

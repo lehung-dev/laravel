@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 $prefix_admin = config('pvt.admin.prefix_admin');
+$prefix_news  = config('pvt.app.prefix_news');
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,8 +22,6 @@ Route::get('/', function () {
 
 
 Route::group(['prefix' => $prefix_admin], function () {
-    
-
     /*=====================     DASHBOARD      ====================*/
     $prefix             = 'dashboard';
     $controllerName     = 'dashboard';
@@ -45,14 +44,12 @@ Route::group(['prefix' => $prefix_admin], function () {
     });
 });
 
-// Route::group(['prefix' => $prefixAdmin], function () {
-//         /*===================SLIDER===================*/
-//         $prefix = 'slider';
-//         $controllerName = 'slider';
-//         Route::group(['prefix' => $prefix], function () use ($controllerName) {
-//             $controller = ucfirst($controllerName) . 'Controller@';
-//             Route::get('/',             [ 'as' => $controllerName ,                 'uses'  => $controller . 'index']);
-//             Route::get('form/{id?}',    [ 'as' => $controllerName . 'form',         'uses'  => $controller . 'form'])->where('id', '[0-9]+');
-//             Route::get('delete/{id}',   [ 'as' => $controllerName . 'delete',       'uses'  => $controller . 'delete'])->where('id', '[0-9]+');
-//         });
-// });
+Route::group(['prefix' => $prefix_news], function () {
+    /*=====================     HOMEPAGE      ====================*/
+    $prefix             = '/';
+    $controllerName     = 'home';
+    Route::group(['prefix' => $prefix], function () use ($controllerName) {
+        $controller = ucfirst($controllerName) . 'Controller@';
+        Route::get('/',                             ['as'    =>  $controllerName,  'uses'               =>  $controller . 'index']);
+    });
+});
