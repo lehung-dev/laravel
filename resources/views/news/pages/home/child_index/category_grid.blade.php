@@ -1,7 +1,7 @@
 <div class="world">
     <div class="section_title_container d-flex flex-row align-items-start justify-content-start">
         <div>
-            <div class="section_title">Giáo dục</div>
+            <div class="section_title">{{ $item['name'] }}</div>
         </div>
         <div class="section_bar"></div>
     </div>
@@ -15,7 +15,7 @@
                                                         class="img-fluid w-100"></div>
                         <div class="post_content">
                             <div class="post_category cat_technology ">
-                                <a href="the-loai/giao-duc-2.html">Giáo dục</a>
+                                <a href="the-loai/giao-duc-2.html">{{ $item['name'] }}</a>
                             </div>
                             <div class="post_title"><a
                                     href="bai-viet/blockchain-va-tri-tue-nhan-tao-ai-lam-thay-doi-giao-duc-truc-tuyen-21.html">Blockchain

@@ -1,7 +1,7 @@
 <div class="technology">
     <div class="section_title_container d-flex flex-row align-items-start justify-content-start">
         <div>
-            <div class="section_title">Thể thao</div>
+            <div class="section_title">{{ $item['name'] }}</div>
         </div>
         <div class="section_bar"></div>
     </div>
@@ -16,7 +16,7 @@
                 <div class="col-lg-7">
                     <div class="post_content">
                         <div class="post_category cat_technology ">
-                            <a href="the-loai/the-thao-1.html">Thể thao</a>
+                            <a href="the-loai/the-thao-1.html">{{ $item['name'] }}  </a>
                         </div>
                         <div class="post_title"><a
                                 href="bai-viet/ha-noi-vao-vong-knock-out-afc-cup-14.html">Hà Nội
