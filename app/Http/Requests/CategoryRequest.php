@@ -4,9 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SliderRequest extends FormRequest
+class CategoryRequest extends FormRequest
 {
-    private $table = 'slider';
+    private $table = 'category';
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,19 +25,14 @@ class SliderRequest extends FormRequest
     public function rules()
     {
         $id = $this->id;
-        $condThumb = 'bail|required|image|max:1024';
         $condName = "bail|required|between:5,100|unique:$this->table,name";
         if(!empty($id))
         {
-            $condThumb = 'bail|image|max:1024';
             $condName .= ",$id";
         }
         return [
             'name'          => $condName,
-            'description'   => 'bail|required',
-            'link'          => 'bail|required|min:5|url',
             'status'        => 'bail|in:active,inactive',
-            'thumb'         => $condThumb,
         ];
     }
 
@@ -46,8 +41,6 @@ class SliderRequest extends FormRequest
         return [
             'name.required' => 'Name không được rỗng',
             'name.min'      => 'Name :input không được. Chiều dài phải :min ký tự',
-            'description.required'  => 'Description không được rỗng',
-            'link.required'  => 'Link không được rỗng',
         ];
     }
 }

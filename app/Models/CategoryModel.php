@@ -6,24 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class SliderModel extends AdminModel
+class CategoryModel extends AdminModel
 {
     
     public function __construct()
     {
-        $this->table = 'slider';
-        $this->folderUpload = 'slider';
-        $this->fieldSearchAccepted = [ 'id', 'name', 'description', 'link' ];
-        $this->fieldSearchAccepted = [ '_token', 'thumb_current' ];
+        $this->table = 'category';
+        $this->folderUpload = 'category';
+        $this->fieldSearchAccepted = [ 'id', 'name'];
+        $this->fieldSearchAccepted = [ '_token' ];
     }
 
+    /*===================================================================*/
     public function listItem($params = null, $options = null)
     {
         $result = null;
 
         if ($options['task'] == 'admin-list-item') {
-            // $result = SliderModel::all();
-            $query = self::select('id', 'name', 'description', 'link', 'thumb', 'created', 'created_by', 'modified', 'modified_by', 'status');
+            // $result = CategoryModel::all();
+            $query = self::select('id', 'name', 'is_home', 'display' ,'created', 'created_by', 'modified', 'modified_by', 'status');
 
             // Lọc trạng thái
             if ($params['filter']['status'] !== 'all') {
@@ -46,22 +47,28 @@ class SliderModel extends AdminModel
 
             $result = $query->orderBy('id', 'desc')->paginate($params['pagination']['totalItemPerPage']);
         }
-        
-        
+                
         if ($options['task'] == 'news-list-item') {
-            $query = self::select('id', 'name', 'description', 'link', 'thumb', 'status');
+            $query = self::select('id', 'name', 'status');
             $query->where('status', 'LIKE', 'active');
-            $result = $query->orderBy('id', 'desc')->limit(5)->get();
+            $result = $query->orderBy('id', 'asc')->limit(8)->get();
+        }
+
+        if ($options['task'] == 'news-list-item-is-home') {
+            $query = self::select('id', 'name' , 'display');
+            $query->where('is_home', '=', 1);
+            $result = $query->orderBy('id', 'asc')->limit(8)->get()->toArray();
         }
         return $result;
     }
 
+    /*===================================================================*/
     public function countItem($params = null, $options = null)
     {
         $result = null;
 
         if ($options['task'] == 'admin-count-item') {
-            // $result = SliderModel::all();
+            // $result = CategoryModel::all();
             $query = self::select(DB::raw('count(id) as count, status'));
 
             if ($params['search']['value'] !== '') {
@@ -84,19 +91,18 @@ class SliderModel extends AdminModel
         return $result;
     }
     
+    /*===================================================================*/
     static public function getItem($params = null, $options = null)
     {
         $result = null;
 
         if ($options['task'] == 'get-item') {
-            $result = self::select('id', 'name', 'description', 'link', 'thumb', 'status')->where('id', '=', $params['id'])->first()->toArray();
-        }
-        if ($options['task'] == 'get-thumb') {
-            $result = self::select('id', 'thumb')->where('id', '=', $params['id'])->first()->toArray();
+            $result = self::select('id', 'name', 'status')->where('id', '=', $params['id'])->first()->toArray();
         }
         return $result;
     }
 
+    /*===================================================================*/
     public function saveItem($params = null, $options = null)
     {
         $result = null;
@@ -106,9 +112,20 @@ class SliderModel extends AdminModel
             $result = self::where('id', $params['id'])->update(['status' => $status]);
         }
         
+        if($options['task'] == 'change-is-home')
+        {
+            $isHome = ($params['currentIsHome'] == 1) ? 0 : 1;
+            $result = self::where('id', $params['id'])->update(['is_home' => $isHome]);
+        }
+        
+        if($options['task'] == 'change-display')
+        {
+            $currentDisplay = $params['currentDisplay'];
+            $result = self::where('id', $params['id'])->update(['display' => $currentDisplay]);
+        }
+        
         if($options['task'] == 'add-item')
         {
-            $params['thumb'] = self::uploadThumb($params['thumb']);;
             $params['created_by'] = 'van hung';
             $params['created'] = date('Y-m-d');
             $params = self::prepareParams($params);
@@ -119,14 +136,6 @@ class SliderModel extends AdminModel
         
         if($options['task'] == 'edit-item')
         {
-            if(!empty($params['thumb']))
-            {
-                // Xóa cũ
-                self::deleteThumb($params['thumb_current']);
-                //Up mới
-                $params['thumb'] = self::uploadThumb($params['thumb']);
-            }
-           
             $params['modified_by'] = 'van hung';
             $params['modified'] = date('Y-m-d');
             $params = self::prepareParams($params);
@@ -137,13 +146,12 @@ class SliderModel extends AdminModel
         return $result;
     }
     
+    /*===================================================================*/
     public function deleteItem($params = null, $options = null)
     {
         $result = null;
         if($options['task'] == 'delete-item')
         {
-            $item = self::getItem($params, ['task' => 'get-thumb']);
-            self::deleteThumb($item['thumb']);
             $result = self::where('id', $params['id'])->delete();
         }
         return $result;

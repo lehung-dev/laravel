@@ -18,6 +18,14 @@ return [
             'inactive'      => ['name' => 'Chưa kích hoạt',   'class' => 'btn-info'],
             'default'       => ['name' => 'Chưa xác định',    'class' => 'btn-info'],
         ],
+        'is_home' => [
+            0               => ['name' => 'Không hiển thị',     'class' => 'btn-warning'],
+            1               => ['name' => 'Hiển thị',           'class' => 'btn-primary'],
+        ],
+        'display' => [
+            'list'          => ['name' => 'Danh sách' ],
+            'grid'          => ['name' => 'Lưới' ],
+        ],
         'search' => [
             'all'           => ['name' => 'Search by All'],
             'id'            => ['name' => 'Search by ID'],
@@ -38,7 +46,8 @@ return [
     'config'    =>  [
         'search'    =>  [
             'default'   =>   ['all', 'id', 'fullname'],
-            'slider'    =>   ['all', 'id', 'name', 'description', 'link']
+            'slider'    =>   ['all', 'id', 'name', 'description', 'link'],
+            'category'    =>   ['all', 'id', 'name'],
         ]
     ]
 ];

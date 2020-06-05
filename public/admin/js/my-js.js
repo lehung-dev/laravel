@@ -6,7 +6,7 @@ $(document).ready(function () {
     let $inputSearchValue = $("input[name  = search_value]");
 
     let $selectFilter = $("select[name = select_filter]");
-    let $selectChangeAttr = $("select[name =  select_change_attr]");
+    let $selectChangeAttr = $("select[name = select_change_attr]");
     let $selectChangeAttrAjax = $("select[name =  select_change_attr_ajax]");
 
     $("a.select-field").click(function (e) {
@@ -117,8 +117,8 @@ $(document).ready(function () {
 
     $selectChangeAttr.on("change", function () {
         let select_value = $(this).val();
-        let $url = $(this).data("url");
-        window.location.href = $url.replace("value_new", select_value);
+        let url = $(this).data("url");
+        window.location.href = url.replace("value_new", select_value);
     });
 
     $selectChangeAttrAjax.on("change", function () {

@@ -5,36 +5,66 @@ use Illuminate\Support\Facades\Config;
 
 class Template
 {
-
+    /*========================================================================*/
     public static function showItemHistory($by, $time)
     {
         $output = sprintf('<p><i class="fa fa-user"></i> %s</p><p><i class="fa fa-clock-o"></i> %s</p>', $by, date('d/m/Y H:i', strtotime($time)));
         return $output;
     }
-
+    
+    /*========================================================================*/
     public static function showItemStatus($controllerName, $id, $status)
     {
         $tempStatus = Config::get('pvt.template.status');
-
+        
         $link_status = route($controllerName . '/status', ['status' => $status, 'id' => $id]);
-
+        
         $statusCurrent = (array_key_exists($status, $tempStatus)) ? $status : 'default';
         $currTemp = $tempStatus[$statusCurrent];
-
+        
         $output = sprintf('<a href="%s" type="button" class="btn btn-round %s">%s</a>', $link_status, $currTemp['class'], $currTemp['name']);
         return $output;
     }
-
+    
+    /*========================================================================*/
+    public static function showItemIsHome($controllerName, $id, $isHome)
+    {
+        $tempIsHome = Config::get('pvt.template.is_home');
+        $link_is_home = route($controllerName . '/is_home', ['is_home' => $isHome, 'id' => $id]);
+        
+        $isHomeCurrent = (array_key_exists($isHome, $tempIsHome)) ? $isHome : '1';
+        $currTemp = $tempIsHome[$isHomeCurrent];
+        
+        $output = sprintf('<a href="%s" type="button" class="btn btn-round %s">%s</a>', $link_is_home, $currTemp['class'], $currTemp['name']);
+        return $output;
+    }
+    
+    /*========================================================================*/
+    public static function showItemSelect($controllerName, $id, $isDisplay)
+    {
+        $link_change = route($controllerName . '/display', ['display' => 'value_new' , 'id' => $id]);
+        $tempDisplay = Config::get('pvt.template.display');
+        $output = '<select name="select_change_attr" data-url="'.$link_change.'" class="form-control">';
+        foreach ($tempDisplay as $key => $value) {
+            $selected = ($key == $isDisplay) ? 'selected="selected"' : '';
+            $output .= sprintf('<option value="%s" %s>%s</option>', $key,  $selected,  $value['name']);
+        }
+        $output .= '</select>';
+        return $output;
+    }
+    
+    /*========================================================================*/
     public static function showItemThumb($controllerName, $thumbName, $thumbAlt)
     {
         $output = sprintf('<img src="%s" alt="%s" class="zvn_thumd" width="500">', asset('images/' . $controllerName . "/" . $thumbName), $thumbAlt);
         return $output;
     }
-
+    
+    /*========================================================================*/
     public static function showButtonAction($controllerName, $id, $key_remove = null)
     {
         $tempButton = Config::get('pvt.template.button');
-
+        
         if (!empty($key_remove)) {
             if (is_array($key_remove)) {
                 foreach ($key_remove as $key) {
@@ -44,18 +74,19 @@ class Template
                 if ($key_remove) unset($tempButton[$key_remove]);
             }
         }
-
-
+        
+        
         $output = '<div class="zvn-box-btn-filter">';
         foreach ($tempButton as $button) {
             $link = route($controllerName . $button['route-name'], ['id' => $id]);
             $output .= sprintf('<a href="%s" type="button" class="btn btn-icon %s" data-toggle="tooltip" data-placement="top" data-original-title="%s">
                                 <i class="fa %s"></i></a>', $link, $button['class'], $button['title'], $button['icon']);
-        }
-        $output .= '</div>';
-        return $output;
-    }
-
+                            }
+                            $output .= '</div>';
+                            return $output;
+                        }
+                        
+    /*========================================================================*/
     public static function showButtonStatus($controllerName, $itemsStatusCount = 0, $currentActive, $paramSearch = null)
     {
         $xhtml = null;
@@ -86,7 +117,7 @@ class Template
         return $xhtml;
     }
 
-
+    /*========================================================================*/
     public static function showAreaSearch($controllerName, $paramSearch = null)
     {
         $xhtml = null;
